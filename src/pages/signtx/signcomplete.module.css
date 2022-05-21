@@ -1,0 +1,33 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    margin-top: 20px;
+}
+
+.title {
+    font-size: 40px;
+    font-weight: 700;
+    text-align: center;
+    color: #6A4DFD;
+    filter: drop-shadow(0px 0px 8px #6A4DFD);
+}
+
+.status_wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.status_title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.status_progress {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    color: gray;
+    filter: drop-shadow(0px 0px 8px gray);
+}

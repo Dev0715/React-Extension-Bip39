@@ -1,0 +1,30 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 54px;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    color: #6A4DFD;
+    filter: drop-shadow(0px 0px 8px #6A4DFD);
+}
+
+.inputForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.inputForm input {
+    text-align: center;
+}
+
+.btns_wrapper {
+    display: flex;
+    gap: 60px;
+}

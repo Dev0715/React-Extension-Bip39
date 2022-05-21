@@ -1,0 +1,74 @@
+.wrapper {
+    position: absolute;
+    top: 16px;
+    left: 0px;
+    width: 100%;
+    display: flex;
+    /* gap: 24px; */
+}
+
+.container {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+    display: flex;
+    /* align-items: baseline; */
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    border: 1px solid gainsboro;
+}
+
+.title:hover {
+    background-color: gainsboro;
+    cursor: pointer;
+}
+
+.switch_content_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+}
+
+.switch_content {
+    display: flex;
+    transform: translate(0, -1px);
+}
+
+.switch_icon_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.switch_icon {
+    display: flex;
+    width: 80%;
+}
+
+.back_wrapper {
+    display: flex;
+}
+
+.back {
+    width: 40px;
+    height: 40px;
+}
+
+.back:hover {
+    transform: translate(0, -2px);
+    cursor: pointer;
+}
