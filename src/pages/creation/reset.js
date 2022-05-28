@@ -3,22 +3,42 @@ import { goTo } from "react-chrome-extension-router";
 import Btn from "../../components/button";
 
 import { useState } from "react";
-import SecretPhrase from "./secretphrase";
 import Login from "../login";
+import aes from "crypto-js/aes";
+import { useGloabalStateContext } from "../../context/provider";
 
 const Reset = () => {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
+  const [error, setError] = useState("");
+  const { _mnemonic } = useGloabalStateContext();
 
   const isPasswordValid = () => {
-    if (password === "") return false;
-    else if (password !== rePassword) return false;
-    else return true;
+    if (password === "") {
+      setError("Password should not be empty!");
+      return false;
+    } else if (password !== rePassword) {
+      setError("Confirmation should be matched!");
+      return false;
+    } else return true;
   };
 
   const onRestore = () => {
-    // if (isPasswordValid())
-    goTo(Login);
+    if (isPasswordValid()) {
+      const encrypted = aes.encrypt(_mnemonic, password);
+      localStorage.setItem("enp", encrypted);
+      goTo(Login);
+    }
+  };
+
+  const changePassword = (e) => {
+    setError("");
+    setPassword(e.target.value);
+  };
+
+  const changeRePassword = (e) => {
+    setError("");
+    setRePassword(e.target.value);
   };
 
   return (
@@ -29,18 +49,15 @@ const Reset = () => {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          onChange={changePassword}
         />
         <input
           type="password"
           placeholder="Confirm"
           value={rePassword}
-          onChange={(e) => {
-            setRePassword(e.target.value);
-          }}
+          onChange={changeRePassword}
         />
+        <div className={styles.errorMessage}>{error}</div>
       </div>
       <div className={styles.btns_wrapper}>
         <Btn title="Restore" onClick={onRestore} />

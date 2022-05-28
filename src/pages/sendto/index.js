@@ -1,23 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { goTo } from "react-chrome-extension-router";
 import Btn from "../../components/button";
 import { chainSymbol } from "../../context/config";
 import { useGloabalStateContext } from "../../context/provider";
 import SignTx from "../signtx";
 import styles from "./index.module.css";
+import axios from "axios";
 
 const SendTo = () => {
   const { isBTC } = useGloabalStateContext();
-  const [address, setAddress] = useState("");
-  const [amount, setAmount] = useState("");
-  const [jpyAmount, setJpyAmount] = useState(0);
+  const [jpyRate, setJpyRate] = useState(0);
+  const { _address, _setAddress, _amount, _setAmount } =
+    useGloabalStateContext();
 
-  const jpyRate = 3000;
+  useEffect(() => {
+    try {
+      const chain = isBTC ? "bitcoin" : "ethereum";
+      axios
+        .get(`https://api.coingecko.com/api/v3/coins/${chain}`)
+        .then((res) => {
+          console.log(res.data.market_data.current_price["jpy"]);
+          setJpyRate(res.data.market_data.current_price["jpy"]);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [isBTC]);
 
   const onAmountChange = (e) => {
     const value = e.target.value;
-    setAmount(value);
-    setJpyAmount(value * jpyRate);
+    _setAmount(value);
   };
 
   const sendAsset = () => {
@@ -31,9 +43,9 @@ const SendTo = () => {
         <input
           type="text"
           placeholder="Address"
-          value={address}
+          value={_address}
           onChange={(e) => {
-            setAddress(e.target.value);
+            _setAddress(e.target.value);
           }}
         />
       </div>
@@ -42,14 +54,14 @@ const SendTo = () => {
         <input
           type="number"
           placeholder={chainSymbol[Number(isBTC)]}
-          value={amount}
+          value={_amount}
           onChange={onAmountChange}
         />
         <div className={`${styles.inputWhat} ${styles.jpyRate}`}>
-          {`( = ${jpyAmount.toFixed(2)} JPY )`}
+          {`( = ${(_amount * jpyRate).toFixed(2)} JPY )`}
         </div>
       </div>
-      <Btn title="Send" onClick={sendAsset} />
+      <Btn title="Confirm" onClick={sendAsset} />
     </div>
   );
 };

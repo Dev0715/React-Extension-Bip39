@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import QRCode from "react-qr-code";
 
 const Receive = () => {
+  // eslint-disable-next-line no-unused-vars
   const [address, setAddress] = useState("0x7F47ab4BD1A63EeCEEFf1F3A268B7AAF39Ca893e");
 
   return (

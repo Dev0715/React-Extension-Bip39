@@ -1,7 +1,8 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 120px;
+    gap: 80px;
+    margin-top: 50px;
 }
 
 .title {
@@ -19,6 +20,13 @@
     gap: 16px;
 }
 
+.errorMessage {
+    position: absolute;
+    bottom: 0;
+    color: red;
+    bottom: 170px;
+}
+
 .inputForm input {
     text-align: center;
 }
@@ -30,5 +38,5 @@
 .startForm {
     display: flex;
     justify-content: center;
-    margin-top: 24px;
+    margin-top: 48px;
 }

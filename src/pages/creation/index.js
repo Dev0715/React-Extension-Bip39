@@ -4,20 +4,35 @@ import Btn from "../../components/button";
 
 import { useState } from "react";
 import SecretPhrase from "./secretphrase";
+import { useGloabalStateContext } from "../../context/provider";
 
 const Creation = () => {
-  const [password, setPassword] = useState("");
+  const { _password, _setPassword } = useGloabalStateContext();
   const [rePassword, setRePassword] = useState("");
+  const [error, setError] = useState("");
 
   const isPasswordValid = () => {
-    if (password === "") return false;
-    else if (password !== rePassword) return false;
-    else return true;
+    if (_password === "") {
+      setError("Password should not be empty!");
+      return false;
+    } else if (_password !== rePassword) {
+      setError("Confirmation should be matched!");
+      return false;
+    } else return true;
   };
 
   const onCreate = () => {
-    // if (isPasswordValid())
-    goTo(SecretPhrase);
+    if (isPasswordValid()) goTo(SecretPhrase);
+  };
+
+  const changePassword = (e) => {
+    setError("");
+    _setPassword(e.target.value);
+  };
+
+  const changeRePassword = (e) => {
+    setError("");
+    setRePassword(e.target.value);
   };
 
   return (
@@ -27,19 +42,16 @@ const Creation = () => {
         <input
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          value={_password}
+          onChange={changePassword}
         />
         <input
           type="password"
           placeholder="Confirm"
           value={rePassword}
-          onChange={(e) => {
-            setRePassword(e.target.value);
-          }}
+          onChange={changeRePassword}
         />
+        <div className={styles.errorMessage}>{error}</div>
       </div>
       <div className={styles.btns_wrapper}>
         <Btn title="Create" onClick={onCreate} />

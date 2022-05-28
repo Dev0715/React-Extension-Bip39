@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { goBack } from "react-chrome-extension-router";
 import ReactSwitch from "react-switch";
 import { useGloabalStateContext } from "../../context/provider";
@@ -5,7 +6,18 @@ import { BtcIcon, EthIcon } from "../../context/svgs";
 import styles from "./index.module.css";
 
 const Header = () => {
-  const { isBTC, setBTC, isSwitchAble } = useGloabalStateContext();
+  const { isBTC, setBTC, isSwitchAble, btcKeys, ethKeys } =
+    useGloabalStateContext();
+
+  const shortAddress = useMemo(() => {
+    const _address = isBTC ? btcKeys.address : ethKeys.address;
+    const len = _address.length;
+    if (len === 0) return "No Address";
+    else
+      return (
+        _address.substr(0, isBTC ? 3 : 5) + "..." + _address.substr(len - 4, 4)
+      );
+  }, [isBTC, btcKeys, ethKeys]);
 
   const SwithContent = ({ title }) => {
     return (
@@ -23,6 +35,23 @@ const Header = () => {
         </div>
       </div>
     );
+  };
+
+  const onClickAddress = () => {
+    const _address = isBTC ? btcKeys.address : ethKeys.address;
+    copyToClipboard(_address)
+      .then(() => {
+        console.log("Copied");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const copyToClipboard = (str) => {
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+      return navigator.clipboard.writeText(str);
+    return Promise.reject("The Clipboard API is not available.");
   };
 
   const onBack = () => {
@@ -51,8 +80,8 @@ const Header = () => {
           uncheckedHandleIcon={<SwitchIcon isBTC={false} />}
           disabled={!isSwitchAble}
         />
-        <div className={styles.title}>
-          {isBTC ? "3FZ...tZc5" : "0x7F4...893e"}
+        <div className={styles.title} onClick={onClickAddress}>
+          {shortAddress}
         </div>
         <div className={styles.back_wrapper} onClick={onBack}>
           <img className={styles.back} src="./icon-back.png" alt="back" />

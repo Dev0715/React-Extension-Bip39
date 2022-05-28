@@ -1,9 +1,5 @@
 import styles from "./signcomplete.module.css";
-import { useGloabalStateContext } from "../../context/provider";
-import { chainName, chainSymbol } from "../../context/config";
-import { BuyIcon, SendIcon } from "../../context/svgs";
 import { goTo } from "react-chrome-extension-router";
-import SendTo from "../sendto";
 import Status from "./status";
 
 const SignComplete = () => {
@@ -23,4 +19,3 @@ const SignComplete = () => {
 };
 
 export default SignComplete;
-    

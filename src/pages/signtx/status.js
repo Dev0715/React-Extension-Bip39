@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckIcon, CycleIcon, LoadingGif, PlusIcon } from "../../context/svgs";
+import { CheckIcon, LoadingGif, PlusIcon } from "../../context/svgs";
 import styles from "./status.module.css";
 
 const WAITING = 1;
@@ -7,6 +7,7 @@ const RUNNING = 2;
 const CHECKED = 3;
 
 const Status = () => {
+  // eslint-disable-next-line no-unused-vars
   const [steps, setSteps] = useState([
     {
       title: "Signing Complete",
