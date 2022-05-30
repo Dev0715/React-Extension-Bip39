@@ -13,6 +13,7 @@ import SendTo from "../sendto";
 import Receive from "../receive";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ExportPriv from "../exportpriv";
 
 const Home = () => {
   const { isBTC, btcKeys, ethKeys } = useGloabalStateContext();
@@ -59,6 +60,10 @@ const Home = () => {
     goTo(SendTo);
   };
 
+  const onExportPriv = () => {
+    goTo(ExportPriv);
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>{chainName[Number(isBTC)]}</div>
@@ -81,6 +86,9 @@ const Home = () => {
           </div>
           <div className={styles.btn_text}>Send</div>
         </div>
+      </div>
+      <div className={styles.forgot} onClick={onExportPriv}>
+        Export Private Key
       </div>
     </div>
   );

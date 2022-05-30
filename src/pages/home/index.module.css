@@ -61,3 +61,10 @@
 .btn_text {
     font-size: 16px;
 }
+
+.forgot {
+    color: blue;
+    position: absolute;
+    bottom:20px;
+    text-decoration: underline;
+}

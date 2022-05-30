@@ -1,20 +1,19 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import styles from "./index.module.css";
 import QRCode from "react-qr-code";
+import { useGloabalStateContext } from "../../context/provider";
 
 const Receive = () => {
-  // eslint-disable-next-line no-unused-vars
-  const [address, setAddress] = useState("0x7F47ab4BD1A63EeCEEFf1F3A268B7AAF39Ca893e");
+  const { isBTC, btcKeys, ethKeys } = useGloabalStateContext();
+  const address = useMemo(() => {
+    return isBTC ? btcKeys.address : ethKeys.address;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBTC]);
 
   return (
     <div className={styles.wrapper}>
-      <QRCode value="0x7F47ab4BD1A63EeCEEFf1F3A268B7AAF39Ca893e" />
-      <input
-        placeholder="Address"
-        readOnly
-        value={address}
-        // onChange={(e) => setAddress(e.target.value)}
-      />
+      <QRCode value={address} />
+      <input placeholder="Address" readOnly value={address} />
     </div>
   );
 };

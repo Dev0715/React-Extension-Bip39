@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckIcon, LoadingGif, PlusIcon } from "../../context/svgs";
+import { CheckIcon, CheckIconGray, LoadingGif } from "../../context/svgs";
 import styles from "./status.module.css";
 
 const WAITING = 1;
@@ -31,20 +31,42 @@ const Status = () => {
 
   return (
     <div className={styles.wrapper} onClick={onClick}>
-      {steps.map((step) => (
-        <div className={styles.step_wrapper} key={step.title}>
-          <div className={styles.status_symbol}>
-            {step.status === CHECKED ? (
-              <CheckIcon />
-            ) : step.status === RUNNING ? (
-              // <CycleIcon />
-              <LoadingGif />
-            ) : (
-              <PlusIcon />
-              
-            )}
+      {steps.map((step, index) => (
+        <div className={styles.stepContainer} key={step.title}>
+          <div className={styles.step_wrapper}>
+            <div className={styles.status_symbol}>
+              {step.status === CHECKED ? (
+                <CheckIcon />
+              ) : step.status === RUNNING ? (
+                // <CycleIcon />
+                <LoadingGif />
+              ) : (
+                <CheckIconGray />
+              )}
+            </div>
+            <div
+              className={styles.step_title}
+              style={{
+                color:
+                  step.status === CHECKED
+                    ? "#34b171"
+                    : step.status === RUNNING
+                    ? "black"
+                    : "gray",
+              }}
+            >
+              {step.title}
+            </div>
           </div>
-          <div className={styles.step_title}>{step.title}</div>
+          {index < 3 && (
+            <div
+              className={styles.step_line}
+              style={{
+                marginBottom:
+                  steps[index + 1].status === RUNNING ? "4px" : "0px",
+              }}
+            />
+          )}
         </div>
       ))}
     </div>

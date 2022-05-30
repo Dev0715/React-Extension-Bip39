@@ -12,6 +12,7 @@ import ECPairFactory from "ecpair";
 import * as bitcoin from "bitcoinjs-lib";
 import * as ecc from "tiny-secp256k1";
 import { encode } from "bitcoinjs-lib/src/script_signature";
+import { sha256 } from "bitcoinjs-lib/src/crypto";
 
 const ECPair = ECPairFactory(ecc);
 
@@ -38,16 +39,34 @@ const SignTx = () => {
         .post(
           `${
             blockcypherApi[Number(isLiveMode)][Number(isBTC)]
-          }/txs/new?token=${blockcypherApiKey}`,
+          }/txs/new?token=${blockcypherApiKey}&includeToSignTx=${true}`,
           JSON.stringify(newTx)
         )
         .then((res) => {
-          const _gas = res.data.tx.fees;
-          const _eth = _gas / Math.pow(10, 9) / Math.pow(10, 9);
-          const _btc = _gas / Math.pow(10, 8);
-          setGasPrice(isBTC ? _btc : _eth);
-          setError("");
-          setTxData(res.data);
+          const _data = res.data;
+          console.log(_data);
+
+          const _res = isBTC
+            ? _data.tosign_tx.map((tosign_tx, index) => {
+                const _tosign = sha256(
+                  sha256(new Buffer(tosign_tx, "hex"))
+                ).toString("hex");
+                return _tosign === _data.tosign[index];
+              })
+            : [true];
+          console.log(_res);
+
+          if (_res.includes(false)) {
+            setError("Transactioin is invalid!");
+          } else {
+            console.log("Transaction is valid!");
+            const _gas = _data.tx.fees;
+            const _eth = _gas / Math.pow(10, 9) / Math.pow(10, 9);
+            const _btc = _gas / Math.pow(10, 8);
+            setGasPrice(isBTC ? _btc : _eth);
+            setError("");
+            setTxData(_data);
+          }
         })
         .catch((errResponse) => {
           console.log(errResponse);

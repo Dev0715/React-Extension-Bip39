@@ -1,0 +1,44 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.inputForm {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.inputWhat {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.priv {
+    width: 74%;
+    padding: 3%;
+    margin-left: 10%;
+    /* margin-right: 10%; */
+    transform: translate(-1px, 0);
+    overflow-wrap: anywhere;
+    border: 1px solid gray;
+    border-radius: 8px;
+}
+
+.alert {
+    border: 1px solid gray;
+    border-radius: 8px;
+    background-color: rgba(215, 58, 73, 0.2);
+    width: 74%;
+    padding: 3%;
+    text-align: center;
+}
+
+.errorMessage {
+    color: red;
+    position: absolute;
+    bottom: 24px;
+}

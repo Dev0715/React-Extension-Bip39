@@ -1,8 +1,8 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    margin-top: 20px;
+    /* gap: 30px; */
+    margin-top: 28px;
 }
 
 .step_wrapper {
@@ -12,8 +12,19 @@
     gap: 12px;
 }
 
+.status_symbol {
+    display: flex;
+}
+
 .step_title {
     font-size: 20px;
     font-weight: bold;
     transform: translateY(-5px);
+}
+
+.step_line {
+   height: 32px;
+   width: 0px;
+   border: 1px solid gray;
+   margin-left: 21px;
 }

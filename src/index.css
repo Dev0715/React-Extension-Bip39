@@ -5,6 +5,11 @@
   src: url("SpaceGrotesk-VariableFont_wght.ttf");
 }
 
+@font-face {
+  font-family: "app-font";
+  src: url("FontsFree-Net-Segoe-UI.ttf");
+}
+
 /* Defalt CSS */
 
 body {
@@ -24,7 +29,7 @@ code {
 /* Cutom CSS */
 
 div {
-  font-family: 'Segoe UI';
+  font-family: 'app-font';
 }
 
 input {
@@ -33,7 +38,7 @@ input {
   box-sizing: border-box;
   outline: none;
   border-radius: 4px;
-  font-family: 'Segoe UI';
+  font-family: 'app-font';
   color: gray;
   /* text-align: center; */
   padding-left: 16px;
@@ -58,7 +63,7 @@ textarea {
   box-sizing: border-box;
   outline: none;
   border-radius: 4px;
-  font-family: 'Segoe UI';
+  font-family: 'app-font';
   color: gray;
   /* text-align: center; */
   padding-left: 16px;
