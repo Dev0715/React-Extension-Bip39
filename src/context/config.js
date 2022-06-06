@@ -11,7 +11,7 @@ export const blockcypherApi = [
   [
     "https://api.blockcypher.com/v1/beth/test", // Eth Api
     // "https://api.blockcypher.com/v1/bcy/test", // Btc Api
-    "https://api.blockcypher.com/v1/btc/test3"
+    "https://api.blockcypher.com/v1/btc/test3",
   ],
   // Live Mode
   [
@@ -19,5 +19,29 @@ export const blockcypherApi = [
     "https://api.blockcypher.com/v1/btc/main", // Btc Api
   ],
 ];
+export const blockcypherSocket = [
+  // Test Mode
+  [
+    "wss://socket.blockcypher.com/v1/beth/test", // Eth Api
+    // "wss://socket.blockcypher.com/v1/bcy/test", // Btc Api
+    "wss://socket.blockcypher.com/v1/btc/test3",
+  ],
+  // Live Mode
+  [
+    "wss://socket.blockcypher.com/v1/eth/main", // Eth Api
+    "wss://socket.blockcypher.com/v1/btc/main", // Btc Api
+  ],
+];
 
 export const GetBalanceInterval = 10000; // ms
+export const GetTxStateInterval = 10000;
+export const GetDbStateInterval = 10000;
+
+export const emailJsServiceId = "service_60mm14e";
+export const emailJsTemplateId = "template_46vxdm1";
+export const emailJsPublicKey = "B5Lngmp-J6naxPtuK";
+export const txApproveApi =
+  "https://us-central1-truly-wallet-5cd8f.cloudfunctions.net/approveTransaction";
+export const txRejectApi =
+  "https://us-central1-truly-wallet-5cd8f.cloudfunctions.net/rejectTransaction";
+export const txApproverEmail = "norikakizawa@bitprism.jp";

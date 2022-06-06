@@ -13,12 +13,13 @@ const { Provider: GlobalStatesProvider } = GlobalStateContext;
 export const Provider = ({ children }) => {
   const [isBTC, setBTC] = useState(true);
   const [isSwitchAble, setSwitchAble] = useState(true);
+  const [btcKeys, setBtcKeys] = useState({ priv: "", pub: "", address: "" });
+  const [ethKeys, setEthKeys] = useState({ priv: "", pub: "", address: "" });
   const [_password, _setPassword] = useState("");
   const [_mnemonic, _setMnemonic] = useState("");
   const [_address, _setAddress] = useState("");
   const [_amount, _setAmount] = useState("");
-  const [btcKeys, setBtcKeys] = useState({ priv: "", pub: "", address: "" });
-  const [ethKeys, setEthKeys] = useState({ priv: "", pub: "", address: "" });
+  const [_txData, _setTxData] = useState("");
 
   return (
     <GlobalStatesProvider
@@ -39,6 +40,8 @@ export const Provider = ({ children }) => {
         _setAddress,
         _amount,
         _setAmount,
+        _txData,
+        _setTxData,
       }}
     >
       {children}

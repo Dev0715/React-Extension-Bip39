@@ -13,6 +13,7 @@ const SendTo = () => {
   const { _address, _setAddress, _amount, _setAmount } =
     useGloabalStateContext();
 
+  // Get JPY rate
   useEffect(() => {
     try {
       const chain = isBTC ? "bitcoin" : "ethereum";

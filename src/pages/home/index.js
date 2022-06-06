@@ -14,6 +14,8 @@ import Receive from "../receive";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ExportPriv from "../exportpriv";
+import Activity from "../activity";
+import { toBTC, toETH } from "../../context/utils";
 
 const Home = () => {
   const { isBTC, btcKeys, ethKeys } = useGloabalStateContext();
@@ -21,35 +23,35 @@ const Home = () => {
 
   // Get Balance
   useEffect(() => {
-    const getBalance = () => {
-      try {
-        const address = isBTC ? btcKeys.address : ethKeys.address;
-        console.log(isBTC, address);
-        axios
-          .get(
-            `${
-              blockcypherApi[Number(isLiveMode)][Number(isBTC)]
-            }/addrs/${address}/balance`
-          )
-          .then((res) => {
-            console.log(res);
-            const _balance = res.data.balance;
-            const _btc = _balance / Math.pow(10, 8);
-            const _eth = _balance / Math.pow(10, 9) / Math.pow(10, 9);
-            setAmount(isBTC ? _btc : _eth);
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     getBalance();
     const timerId = setInterval(getBalance, GetBalanceInterval);
+
     return () => {
+      console.log("Home Destroyed");
       clearInterval(timerId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBTC]);
+
+  const getBalance = () => {
+    try {
+      const address = isBTC ? btcKeys.address : ethKeys.address;
+      console.log(isBTC, address);
+      axios
+        .get(
+          `${
+            blockcypherApi[Number(isLiveMode)][Number(isBTC)]
+          }/addrs/${address}/balance`
+        )
+        .then((res) => {
+          console.log(res);
+          const _balance = res.data.balance;
+          setAmount(isBTC ? toBTC(_balance) : toETH(_balance));
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const receive = () => {
     goTo(Receive);
@@ -62,6 +64,10 @@ const Home = () => {
 
   const onExportPriv = () => {
     goTo(ExportPriv);
+  };
+
+  const onActivity = () => {
+    goTo(Activity);
   };
 
   return (
@@ -87,8 +93,13 @@ const Home = () => {
           <div className={styles.btn_text}>Send</div>
         </div>
       </div>
-      <div className={styles.forgot} onClick={onExportPriv}>
-        Export Private Key
+      <div className={styles.bottom_wrapper}>
+        <div className={styles.forgot} onClick={onExportPriv}>
+          Export Private Key
+        </div>
+        <div className={styles.activity} onClick={onActivity}>
+          Activity
+        </div>
       </div>
     </div>
   );

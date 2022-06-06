@@ -5,6 +5,7 @@ import { useGloabalStateContext } from "../../context/provider";
 
 const Receive = () => {
   const { isBTC, btcKeys, ethKeys } = useGloabalStateContext();
+
   const address = useMemo(() => {
     return isBTC ? btcKeys.address : ethKeys.address;
     // eslint-disable-next-line react-hooks/exhaustive-deps

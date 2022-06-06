@@ -1,13 +1,31 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+  blockcypherApi,
+  blockcypherApiKey,
+  blockcypherSocket,
+  isLiveMode,
+} from "../../context/config";
+import { useGloabalStateContext } from "../../context/provider";
 import { CheckIcon, CheckIconGray, LoadingGif } from "../../context/svgs";
 import styles from "./status.module.css";
+import useWebSocket from "react-use-websocket";
+import ECPairFactory from "ecpair";
+import * as bitcoin from "bitcoinjs-lib";
+import * as ecc from "tiny-secp256k1";
+import { encode } from "bitcoinjs-lib/src/script_signature";
+import { goTo } from "react-chrome-extension-router";
+import Home from "../home";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase";
+
+const ECPair = ECPairFactory(ecc);
 
 const WAITING = 1;
 const RUNNING = 2;
 const CHECKED = 3;
 
 const Status = () => {
-  // eslint-disable-next-line no-unused-vars
   const [steps, setSteps] = useState([
     {
       title: "Signing Complete",
@@ -26,11 +44,92 @@ const Status = () => {
       status: WAITING,
     },
   ]);
+  const [txHash, setTxHash] = useState("");
+  const { _txData, isBTC, btcKeys, ethKeys } = useGloabalStateContext();
+  const { lastMessage } = useWebSocket(
+    `${
+      blockcypherSocket[Number(isLiveMode)][Number(isBTC)]
+    }?token=${blockcypherApiKey}`
+  );
 
-  const onClick = () => {};
+  useEffect(() => {
+    const broadcastTx = async () => {
+      try {
+        let tmpTx = _txData.txdata;
+        tmpTx.pubkeys = [];
+
+        let keys = null;
+        if (isBTC) {
+          const btcNetwork = isLiveMode
+            ? bitcoin.networks.bitcoin
+            : bitcoin.networks.testnet;
+          const wif = ECPair.fromPrivateKey(new Buffer(btcKeys.priv, "hex"), {
+            network: btcNetwork,
+          }).toWIF();
+          keys = ECPair.fromWIF(wif, btcNetwork);
+        } else {
+          const wif = ECPair.fromPrivateKey(
+            new Buffer(ethKeys.priv, "hex")
+          ).toWIF();
+          keys = ECPair.fromWIF(wif);
+        }
+
+        tmpTx.signatures = tmpTx.tosign.map((tosign, n) => {
+          tmpTx.pubkeys.push(keys.publicKey.toString("hex"));
+          const signature = keys.sign(new Buffer(tosign, "hex"));
+          const encoded = encode(signature, 0x01);
+          return encoded.slice(0, encoded.length - 1).toString("hex");
+        });
+
+        axios
+          .post(
+            `${
+              blockcypherApi[Number(isLiveMode)][Number(isBTC)]
+            }/txs/send?token=${blockcypherApiKey}`,
+            tmpTx
+          )
+          .then((_res) => {
+            console.log(_res);
+            if (_res?.data?.tx?.hash) {
+              const _steps = steps;
+              _steps[2].status = CHECKED;
+              _steps[3].status = RUNNING;
+              setSteps([..._steps]);
+              setTxHash(_res.data.tx.hash);
+            } else {
+              console.log("Broadcasting Tx Failed");
+            }
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    broadcastTx();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    console.log(lastMessage);
+    if (lastMessage && lastMessage.event === "confirmed-tx") {
+      if (lastMessage.hash === txHash) {
+        const _steps = steps;
+        _steps[3].status = CHECKED;
+        setSteps([..._steps]);
+        removeDoc().then((res) => {
+          goTo(Home);
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMessage]);
+
+  const removeDoc = async () => {
+    await deleteDoc(doc(db, "transaction", _txData.docId));
+    console.log("Document with ID was deleted: ", _txData.docId);
+  };
 
   return (
-    <div className={styles.wrapper} onClick={onClick}>
+    <div className={styles.wrapper}>
       {steps.map((step, index) => (
         <div className={styles.stepContainer} key={step.title}>
           <div className={styles.step_wrapper}>
@@ -38,7 +137,6 @@ const Status = () => {
               {step.status === CHECKED ? (
                 <CheckIcon />
               ) : step.status === RUNNING ? (
-                // <CycleIcon />
                 <LoadingGif />
               ) : (
                 <CheckIconGray />

@@ -1,51 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { goTo } from "react-chrome-extension-router";
 import Btn from "../../components/button";
-import { blockcypherApi, chainSymbol, isLiveMode } from "../../context/config";
+import {
+  blockcypherApi,
+  chainSymbol,
+  emailJsPublicKey,
+  emailJsServiceId,
+  emailJsTemplateId,
+  isLiveMode,
+  txApproveApi,
+  txApproverEmail,
+  txRejectApi,
+} from "../../context/config";
 import { useGloabalStateContext } from "../../context/provider";
 import styles from "./index.module.css";
-import SignComplete from "./signcomplete";
 import axios from "axios";
 import { blockcypherApiKey } from "../../context/config";
+import Activity from "../activity";
 
-import ECPairFactory from "ecpair";
-import * as bitcoin from "bitcoinjs-lib";
-import * as ecc from "tiny-secp256k1";
-import { encode } from "bitcoinjs-lib/src/script_signature";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import emailjs from "@emailjs/browser";
 import { sha256 } from "bitcoinjs-lib/src/crypto";
-
-const ECPair = ECPairFactory(ecc);
+import { toBTC, toETH } from "../../context/utils";
 
 const SignTx = () => {
-  const { isBTC } = useGloabalStateContext();
-  const { _address, _amount, btcKeys, ethKeys } = useGloabalStateContext();
+  const { _address, _amount, isBTC, btcKeys, ethKeys } =
+    useGloabalStateContext();
   const [gasPrice, setGasPrice] = useState(0);
   const [error, setError] = useState("Calculating Gas Cost");
   const [txData, setTxData] = useState({});
 
-  useState(() => {
-    const address = isBTC ? btcKeys.address : ethKeys.address;
-    const newTx = {
-      inputs: [{ addresses: [address] }],
+  useEffect(() => {
+    createTx();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const createTx = () => {
+    const from_address = isBTC ? btcKeys.address : ethKeys.address;
+    const to_address = _address;
+    const newTxData = {
+      inputs: [{ addresses: [from_address] }],
       outputs: [
         {
-          addresses: [_address],
+          addresses: [to_address],
           value: isBTC ? _amount * Math.pow(10, 8) : _amount * Math.pow(10, 18),
         },
       ],
     };
+
     try {
       axios
         .post(
           `${
             blockcypherApi[Number(isLiveMode)][Number(isBTC)]
           }/txs/new?token=${blockcypherApiKey}&includeToSignTx=${true}`,
-          JSON.stringify(newTx)
+          JSON.stringify(newTxData)
         )
         .then((res) => {
           const _data = res.data;
           console.log(_data);
 
+          // Validation for BTC
           const _res = isBTC
             ? _data.tosign_tx.map((tosign_tx, index) => {
                 const _tosign = sha256(
@@ -56,15 +72,12 @@ const SignTx = () => {
             : [true];
           console.log(_res);
 
+          // if validated
           if (_res.includes(false)) {
             setError("Transactioin is invalid!");
           } else {
-            console.log("Transaction is valid!");
-            const _gas = _data.tx.fees;
-            const _eth = _gas / Math.pow(10, 9) / Math.pow(10, 9);
-            const _btc = _gas / Math.pow(10, 8);
-            setGasPrice(isBTC ? _btc : _eth);
             setError("");
+            setGasPrice(isBTC ? toBTC(_data.tx.fees) : toETH(_data.tx.fees));
             setTxData(_data);
           }
         })
@@ -74,57 +87,47 @@ const SignTx = () => {
           if (err?.error) {
             setError(err.error);
           } else {
-            const _gas = err.tx.fees;
-            const _eth = _gas / Math.pow(10, 9) / Math.pow(10, 9);
-            const _btc = _gas / Math.pow(10, 8);
-            setGasPrice(isBTC ? _btc : _eth);
+            setGasPrice(isBTC ? toBTC(err.tx.fees) : toETH(err.tx.fees));
             setError(err.errors[0].error);
           }
         });
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  };
 
-  const signTx = () => {
-    let tmpTx = txData;
-    tmpTx.pubkeys = [];
+  const signTx = async () => {
+    setError("Sending Approval Request");
 
-    let keys = null;
-    if (isBTC) {
-      const btcNetwork = isLiveMode
-        ? bitcoin.networks.bitcoin
-        : bitcoin.networks.testnet;
-      const wif = ECPair.fromPrivateKey(new Buffer(btcKeys.priv, "hex"), {
-        network: btcNetwork,
-      }).toWIF();
-      keys = ECPair.fromWIF(wif, btcNetwork);
-    } else {
-      const wif = ECPair.fromPrivateKey(
-        new Buffer(ethKeys.priv, "hex")
-      ).toWIF();
-      keys = ECPair.fromWIF(wif);
+    try {
+      const from_address = isBTC ? btcKeys.address : ethKeys.address;
+      const docRef = await addDoc(collection(db, "transaction"), {
+        address: from_address,
+        approved: false,
+        rejected: false,
+        txdata: txData,
+      });
+      console.log("Document written with ID: ", docRef.id);
+
+      const _res = await emailjs.send(
+        emailJsServiceId,
+        emailJsTemplateId,
+        {
+          from_address,
+          to_address: _address,
+          amount: _amount + chainSymbol[Number(isBTC)],
+          link_approve: `${txApproveApi}?documentId=${docRef.id}`,
+          url_reject: `${txRejectApi}?documentId=${docRef.id}`,
+          to_mail: txApproverEmail,
+        },
+        emailJsPublicKey
+      );
+      console.log(_res);
+    } catch (err) {
+      console.error(err);
     }
 
-    tmpTx.signatures = tmpTx.tosign.map((tosign, n) => {
-      tmpTx.pubkeys.push(keys.publicKey.toString("hex"));
-      const signature = keys.sign(new Buffer(tosign, "hex"));
-      const encoded = encode(signature, 0x01);
-      return encoded.slice(0, encoded.length - 1).toString("hex");
-    });
-    console.log(tmpTx);
-
-    axios
-      .post(
-        `${
-          blockcypherApi[Number(isLiveMode)][Number(isBTC)]
-        }/txs/send?token=${blockcypherApiKey}`,
-        tmpTx
-      )
-      .then((res) => {
-        console.log(res);
-      });
-    goTo(SignComplete);
+    goTo(Activity);
   };
 
   return (
