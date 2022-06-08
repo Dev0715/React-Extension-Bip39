@@ -3,10 +3,9 @@ import { createContext, useContext, useState } from "react";
 const GlobalStateContext = createContext({
   isBTC: true,
   isSwitchAble: true,
-  password: "",
-  mnemonic: "",
   btcKeys: { priv: "", pub: "", address: "" },
   ethKeys: { priv: "", pub: "", address: "" },
+  _txHash: ""
 });
 const { Provider: GlobalStatesProvider } = GlobalStateContext;
 
@@ -20,6 +19,7 @@ export const Provider = ({ children }) => {
   const [_address, _setAddress] = useState("");
   const [_amount, _setAmount] = useState("");
   const [_txData, _setTxData] = useState("");
+  const [_txHash, _setTxHash] = useState("");
 
   return (
     <GlobalStatesProvider
@@ -42,6 +42,8 @@ export const Provider = ({ children }) => {
         _setAmount,
         _txData,
         _setTxData,
+        _txHash,
+        _setTxHash
       }}
     >
       {children}

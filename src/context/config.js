@@ -37,7 +37,7 @@ export const GetBalanceInterval = 10000; // ms
 export const GetTxStateInterval = 10000;
 export const GetDbStateInterval = 10000;
 
-export const emailJsServiceId = "service_60mm14e";
+export const emailJsServiceId = "service_ycaiwwg";
 export const emailJsTemplateId = "template_46vxdm1";
 export const emailJsPublicKey = "B5Lngmp-J6naxPtuK";
 export const txApproveApi =
@@ -45,3 +45,4 @@ export const txApproveApi =
 export const txRejectApi =
   "https://us-central1-truly-wallet-5cd8f.cloudfunctions.net/rejectTransaction";
 export const txApproverEmail = "norikakizawa@bitprism.jp";
+// export const txApproverEmail = "danieljin0715@gmail.com";

@@ -1,15 +1,16 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   blockcypherApi,
   blockcypherApiKey,
-  blockcypherSocket,
+  // blockcypherSocket,
+  GetTxStateInterval,
   isLiveMode,
 } from "../../context/config";
 import { useGloabalStateContext } from "../../context/provider";
 import { CheckIcon, CheckIconGray, LoadingGif } from "../../context/svgs";
 import styles from "./status.module.css";
-import useWebSocket from "react-use-websocket";
+// import useWebSocket from "react-use-websocket";
 import ECPairFactory from "ecpair";
 import * as bitcoin from "bitcoinjs-lib";
 import * as ecc from "tiny-secp256k1";
@@ -44,13 +45,13 @@ const Status = () => {
       status: WAITING,
     },
   ]);
-  const [txHash, setTxHash] = useState("");
-  const { _txData, isBTC, btcKeys, ethKeys } = useGloabalStateContext();
-  const { lastMessage } = useWebSocket(
-    `${
-      blockcypherSocket[Number(isLiveMode)][Number(isBTC)]
-    }?token=${blockcypherApiKey}`
-  );
+  const { _txData, _txHash, _setTxHash, isBTC, btcKeys, ethKeys } =
+    useGloabalStateContext();
+  // const { lastMessage } = useWebSocket(
+  //   `${
+  //     blockcypherSocket[Number(isLiveMode)][Number(isBTC)]
+  //   }?token=${blockcypherApiKey}`
+  // );
 
   useEffect(() => {
     const broadcastTx = async () => {
@@ -95,7 +96,8 @@ const Status = () => {
               _steps[2].status = CHECKED;
               _steps[3].status = RUNNING;
               setSteps([..._steps]);
-              setTxHash(_res.data.tx.hash);
+              _setTxHash(_res.data.tx.hash);
+              console.log(_res.data.tx.hash);
             } else {
               console.log("Broadcasting Tx Failed");
             }
@@ -109,19 +111,54 @@ const Status = () => {
   }, []);
 
   useEffect(() => {
-    console.log(lastMessage);
-    if (lastMessage && lastMessage.event === "confirmed-tx") {
-      if (lastMessage.hash === txHash) {
-        const _steps = steps;
-        _steps[3].status = CHECKED;
-        setSteps([..._steps]);
-        removeDoc().then((res) => {
-          goTo(Home);
+    if (_txHash === "") return;
+    const timerId = setInterval(getTxState, GetTxStateInterval);
+    return () => {
+      clearInterval(timerId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_txHash]);
+
+  const getTxState = useCallback(() => {
+    if (_txHash === "") return;
+    try {
+      axios
+        .get(
+          `${blockcypherApi[Number(isLiveMode)][Number(isBTC)]}/txs/${_txHash}`
+        )
+        .then((res) => {
+          console.log(res);
+          if (res?.data?.confirmations > 0) {
+            console.log("Tx Confirmed");
+            const _steps = steps;
+            _steps[3].status = CHECKED;
+            setSteps([..._steps]);
+            _setTxHash("");
+            removeDoc().then((res) => {
+              goTo(Home);
+            });
+          }
         });
-      }
+    } catch (err) {
+      console.log(err);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastMessage]);
+  }, [_txHash]);
+
+  // useEffect(() => {
+  //   console.log(lastMessage);
+  //   if (lastMessage && lastMessage.event === "confirmed-tx") {
+  //     if (lastMessage.hash === txHash) {
+  //       const _steps = steps;
+  //       _steps[3].status = CHECKED;
+  //       setSteps([..._steps]);
+  //       removeDoc().then((res) => {
+  //         goTo(Home);
+  //       });
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [lastMessage]);
 
   const removeDoc = async () => {
     await deleteDoc(doc(db, "transaction", _txData.docId));

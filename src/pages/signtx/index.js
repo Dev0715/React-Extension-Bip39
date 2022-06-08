@@ -109,16 +109,20 @@ const SignTx = () => {
       });
       console.log("Document written with ID: ", docRef.id);
 
+      const _balance = await getBalance();
       const _res = await emailjs.send(
         emailJsServiceId,
         emailJsTemplateId,
         {
           from_address,
           to_address: _address,
-          amount: _amount + chainSymbol[Number(isBTC)],
+          amount: _amount,
+          currency: chainSymbol[Number(isBTC)],
           link_approve: `${txApproveApi}?documentId=${docRef.id}`,
           url_reject: `${txRejectApi}?documentId=${docRef.id}`,
           to_mail: txApproverEmail,
+          user_name: "User Name",
+          balance: _balance,
         },
         emailJsPublicKey
       );
@@ -128,6 +132,21 @@ const SignTx = () => {
     }
 
     goTo(Activity);
+  };
+
+  const getBalance = async () => {
+    try {
+      const address = isBTC ? btcKeys.address : ethKeys.address;
+      const _res = await axios.get(
+        `${
+          blockcypherApi[Number(isLiveMode)][Number(isBTC)]
+        }/addrs/${address}/balance`
+      );
+      return isBTC ? toBTC(_res.data.balance) : toETH(_res.data.balance);
+    } catch (err) {
+      console.log(err);
+      return -1;
+    }
   };
 
   return (
