@@ -36,6 +36,7 @@ export const blockcypherSocket = [
 export const GetBalanceInterval = 10000; // ms
 export const GetTxStateInterval = 10000;
 export const GetDbStateInterval = 10000;
+export const GetAppStateInterval = 10000;
 
 export const emailJsServiceId = "service_ycaiwwg";
 export const emailJsTemplateId = "template_46vxdm1";

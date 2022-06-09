@@ -17,6 +17,8 @@ import {
 } from "../../context/config";
 import axios from "axios";
 
+let useFlag = 0;
+
 const Login = () => {
   const [password, setPassword] = useState("");
   const [isStarted, setStarted] = useState(false);
@@ -24,6 +26,10 @@ const Login = () => {
   const { setBtcKeys, setEthKeys } = useGloabalStateContext();
 
   useEffect(() => {
+    useFlag = 1 - useFlag;
+    if (!useFlag) return;
+    console.log("Login", useFlag);
+
     const enp = localStorage.getItem("enp");
     if (enp !== null) {
       setStarted(true);
@@ -65,16 +71,19 @@ const Login = () => {
         address: BitcoinAddress.from(btcWallet.publicKey, versions.bitcoinMain)
           .address,
         // : BitcoinAddress.from(btcWallet.publicKey, versions.bitcoinTest).address,
+        balance: 0,
+        jpyRate: 0,
       };
       const ethKeys = {
         priv: ethWallet.privateKey.toString("hex"),
         pub: ethWallet.publicKey.toString("hex"),
         address: EthereumAddress.from(ethWallet.publicKey).address,
+        balance: 0,
+        jpyRate: 0,
       };
       setBtcKeys(btcKeys);
       setEthKeys(ethKeys);
 
-      console.log("BTC:", btcKeys, "\nETH:", ethKeys);
       if (btcKeys.address && ethKeys.address) {
         console.log("assertion for address");
         console.assert(BitcoinAddress.isValid(btcKeys.address));
@@ -87,12 +96,13 @@ const Login = () => {
           const res = await axios.post(
             `${blockcypherApi[0][isBTC]}/addrs?token=${blockcypherApiKey}`
           );
-          console.log(res);
 
           const data = {
             priv: res.data.private,
             pub: res.data.public,
             address: res.data.address,
+            balance: 0,
+            jpyRate: 0,
           };
           if (isBTC) setBtcKeys(data);
           else setEthKeys({ ...data, address: "0x" + data.address });

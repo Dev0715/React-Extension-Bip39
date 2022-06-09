@@ -26,6 +26,8 @@ const WAITING = 1;
 const RUNNING = 2;
 const CHECKED = 3;
 
+let useFlag = 0;
+
 const Status = () => {
   const [steps, setSteps] = useState([
     {
@@ -54,6 +56,10 @@ const Status = () => {
   // );
 
   useEffect(() => {
+    useFlag = 1 - useFlag;
+    if (!useFlag) return;
+    console.log("Broadcast", useFlag);
+
     const broadcastTx = async () => {
       try {
         let tmpTx = _txData.txdata;
@@ -112,6 +118,7 @@ const Status = () => {
 
   useEffect(() => {
     if (_txHash === "") return;
+    console.log("Confirmed", _txHash);
     const timerId = setInterval(getTxState, GetTxStateInterval);
     return () => {
       clearInterval(timerId);

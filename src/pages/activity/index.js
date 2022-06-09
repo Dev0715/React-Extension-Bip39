@@ -50,6 +50,7 @@ const Activity = () => {
     const _array2 = await getBlockTxs(_address);
     const _array1 = await getDbTxs(_address);
     setActivity([..._array1, ..._array2]);
+    console.log("Get History");
   };
 
   const getBlockTxs = async (_address) => {
@@ -64,7 +65,6 @@ const Activity = () => {
       const _activity = _txs
         .map((item) => fromBlockTx(item, _address))
         .filter((item) => item.amount !== 0);
-      setActivity([..._activity]);
       return [..._activity];
     } catch (err) {
       console.log(err);

@@ -24,6 +24,8 @@ import emailjs from "@emailjs/browser";
 import { sha256 } from "bitcoinjs-lib/src/crypto";
 import { toBTC, toETH } from "../../context/utils";
 
+let useFlag = 0;
+
 const SignTx = () => {
   const { _address, _amount, isBTC, btcKeys, ethKeys } =
     useGloabalStateContext();
@@ -32,6 +34,10 @@ const SignTx = () => {
   const [txData, setTxData] = useState({});
 
   useEffect(() => {
+    useFlag = 1 - useFlag;
+    if (!useFlag) return;
+    console.log("Sign", useFlag);
+    
     createTx();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -109,7 +115,7 @@ const SignTx = () => {
       });
       console.log("Document written with ID: ", docRef.id);
 
-      const _balance = await getBalance();
+      const _balance = isBTC ? btcKeys.balance : ethKeys.balance;
       const _res = await emailjs.send(
         emailJsServiceId,
         emailJsTemplateId,
@@ -132,21 +138,6 @@ const SignTx = () => {
     }
 
     goTo(Activity);
-  };
-
-  const getBalance = async () => {
-    try {
-      const address = isBTC ? btcKeys.address : ethKeys.address;
-      const _res = await axios.get(
-        `${
-          blockcypherApi[Number(isLiveMode)][Number(isBTC)]
-        }/addrs/${address}/balance`
-      );
-      return isBTC ? toBTC(_res.data.balance) : toETH(_res.data.balance);
-    } catch (err) {
-      console.log(err);
-      return -1;
-    }
   };
 
   return (
