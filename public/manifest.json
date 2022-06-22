@@ -1,10 +1,15 @@
 {
-  "name": "Wallet",
+  "name": "Truly Wallet",
   "description": "Wallet for BTC and ETH",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": ["storage"],
   "action": {
     "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "logo_icon.png",
+    "48": "logo_icon.png",
+    "128": "logo_icon.png"
   }
 }

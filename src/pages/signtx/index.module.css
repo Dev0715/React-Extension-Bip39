@@ -1,30 +1,118 @@
-.wrapper {
+.container {
     width: 100%;
+    height: 100%;
+}
+
+.wrapper {
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    margin-top: 30px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-top: 35px;
 }
 
-.inputForm {
+.label {
+    align-self: flex-start;
+    font-size: 13px;
+    line-height: 18px;
+    margin-top: 16px;
+}
+
+.amount_label {
+    align-self: flex-start;
+    font-size: 16px;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 2px;
 }
 
-.inputWhat {
-    font-size: 16px;
-    font-weight: 700;
+.symbol {
+    font-size: 13px;
 }
 
-.errorMessage {
-    width: 90%;
+.gas_label {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.gas_label input {
+    width: 100%;
+}
+
+.gas_input {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.33);
+    outline: none;
+    box-sizing: border-box;
+    border-radius: 5px;
     font-size: 16px;
-    line-height: 21px;
-    height: 42px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+}
+
+.gas_right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gas_option {
+    position: absolute;
+    z-index: 101;
+    width: 100%;
+    left: 0;
+    top: 50px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.33);
+    background: lightgray;
+}
+
+.gas_select {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+    padding-left: 8px;
+    padding-right: 32px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.gas_select:hover {
+    background: gray;
+}
+
+.send_btn {
+    width: 100%;
+    margin-top: 40px;
+    font-size: 14px;
+    line-height: 20px;
     color: red;
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.waiting {
+    margin-bottom: 32px;
 }

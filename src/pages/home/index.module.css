@@ -1,79 +1,95 @@
-.wrapper {
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.sub_header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 50px;
-    margin-top: 30px;
+    width: 100%;
+    height: 200px;
+    background: #0096F4;
+    border-top: 1px solid #49B6FC;
 }
 
-.title {
-    font-size: 40px;
-    font-weight: 700;
-    text-align: center;
-    color: #6A4DFD;
-    filter: drop-shadow(0px 0px 8px #6A4DFD);
-}
-
-.amount_wrapper {
+.address {
     display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.amount_number {
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.amount_unit {
-    font-size: 16px;
-    color: gray;
-}
-
-.btns_wrapper {
-    display: flex;
-    gap: 60px;
-}
-
-.btn_wrapper {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    font-size: 12px;
+    color: white;
+    background: #49B8FD;
+    height: 24px;
+    border-radius: 12px;
+    padding-left: 9px;
+    padding-right: 9px;
+    margin-top: 16px;
+    margin-bottom: 24px;
     cursor: pointer;
 }
 
-.btn_wrapper:hover {
-    filter: drop-shadow(0px 0px 8px #6A4DFD);
-    transform: translate(0, -2px);
+.address:hover img {
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 1));
+    transform: translate(0, -1px);
 }
 
-.btn_back {
+.address:active {
+    font-weight: bold;
+    background-color: #39A8ED;
+    transform: translate(0, -1px);
+}
+
+.amount {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 26px;
+    color: white;
+    margin-top: 20px;
+}
+
+._amount {
+    display: flex;
+    align-items: baseline;
+    font-size: 14px;
+    color: white;
+    margin-top: 8px;
+}
+
+.symbol {
+    font-size: 15px;
+}
+
+.wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.receive_btn {
+    width: 100%;
+    margin-top: 40px;
+}
+
+.send_btn {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.activity_btn {
+    width: 205px;
+    margin-top: 24px;
+}
+
+.export_priv {
+    margin-top: 52px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: #6A4DFD;
-    border-radius: 18px;
-}
-
-.btn_text {
-    font-size: 16px;
-}
-
-.bottom_wrapper {
-    position: absolute;
-    bottom:20px;
-    text-decoration: underline;
-    display: flex;
-    gap: 24px;
-}
-
-.forgot {
-    color: blue;
-}
-
-.activity {
-    color: green;
+    gap: 4px;
+    font-size: 13px;
+    cursor: pointer;
 }

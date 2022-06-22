@@ -1,0 +1,32 @@
+.container {
+    width: 100%;
+    height: 46px;
+    border-bottom: 2px solid #D5D5D5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.title {
+    display: flex;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.icon_wrapper {
+    position: absolute;
+    left: 16px;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon_wrapper:hover {
+    background-color: #eaeaea;
+}

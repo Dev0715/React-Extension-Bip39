@@ -1,43 +1,73 @@
+.container {
+    width: 100%;
+    height: 100%;
+    background: #0096F4;
+}
+
 .wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 80px;
-    margin-top: 50px;
-}
-
-.title {
-    font-size: 48px;
-    font-weight: 700;
-    text-align: center;
-    color: #6A4DFD;
-    filter: drop-shadow(0px 0px 8px #6A4DFD);
-}
-
-.inputForm {
-    display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    height: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
-.errorMessage {
-    position: absolute;
-    bottom: 0;
-    color: red;
-    bottom: 170px;
+.logo_white {
+    margin-top: 160px;
+    width: 208px;
 }
 
-.inputForm input {
-    text-align: center;
+.bottom_btn {
+    margin-top: 182px;
+    width: 100%;
+    bottom: 40px;
+}
+
+.logo_blue {
+    margin-top: 56px;
+    width: 174px;
+}
+
+.input_text {
+    margin-top: 40px;
+    font-size: 16px;
+}
+
+.input_description {
+    margin-top: 24px;
+    font-size: 13px;
+    align-self: flex-start;
+}
+
+.password_input {
+    margin-top: 4px;
+    width: 100%;
+}
+
+.input_error {
+    margin-top: 4px;
+    font-size: 13px;
+    align-self: flex-start;
+    color: darkred;
+}
+
+.login_btn {
+    margin-top: 40px;
+    width: 100%;
 }
 
 .forgot {
-    color: blue;
-    text-decoration: underline;
+    margin-top: 16px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
 }
 
-.startForm {
-    display: flex;
-    justify-content: center;
-    margin-top: 48px;
+.small_right {
+    transform: rotate(180deg);
+    height: 8px;
 }

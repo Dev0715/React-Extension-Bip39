@@ -2,7 +2,9 @@ export const chainName = ["Ethereum", "Bitcoin"];
 export const chainSymbol = ["ETH", "BTC"];
 
 // export const blockcypherApiKey = "8a8f6dd3cebf4c7ea853fd55330a3a89";
-export const blockcypherApiKey = "4af3a702b1e54374880e7b0865925220";
+// export const blockcypherApiKey = "4af3a702b1e54374880e7b0865925220";
+// Payed account!
+export const blockcypherApiKey = "2e45275f07a64f5dbd0c3bca52349a05";
 export const mailchimpApiKey = "0Bn3vlM_lN6IkFojXX400Q";
 
 export const isLiveMode = false;
@@ -10,8 +12,8 @@ export const blockcypherApi = [
   // Test Mode
   [
     "https://api.blockcypher.com/v1/beth/test", // Eth Api
-    // "https://api.blockcypher.com/v1/bcy/test", // Btc Api
-    "https://api.blockcypher.com/v1/btc/test3",
+    // "https://api.blockcypher.com/v1/bcy/test", // Bcy Api
+    "https://api.blockcypher.com/v1/btc/test3", // Btc testnet Api
   ],
   // Live Mode
   [
@@ -19,22 +21,22 @@ export const blockcypherApi = [
     "https://api.blockcypher.com/v1/btc/main", // Btc Api
   ],
 ];
-export const blockcypherSocket = [
+
+export const blockExplorer = [
   // Test Mode
   [
-    "wss://socket.blockcypher.com/v1/beth/test", // Eth Api
-    // "wss://socket.blockcypher.com/v1/bcy/test", // Btc Api
-    "wss://socket.blockcypher.com/v1/btc/test3",
+    "https://api.blockcypher.com/v1/beth/test/txs", // Eth Api
+    "https://live.blockcypher.com/btc-testnet/tx", // Btc Api
   ],
   // Live Mode
   [
-    "wss://socket.blockcypher.com/v1/eth/main", // Eth Api
-    "wss://socket.blockcypher.com/v1/btc/main", // Btc Api
+    "https://www.blockchain.com/eth/tx", // ETH Api
+    "https://www.blockchain.com/btc/tx", // Btc Api
   ],
 ];
 
 export const GetBalanceInterval = 10000; // ms
-export const GetTxStateInterval = 10000;
+export const GetTxStateInterval = 30000;
 export const GetDbStateInterval = 10000;
 export const GetAppStateInterval = 10000;
 

@@ -1,3 +1,4 @@
+import * as bip39 from "bip39";
 import styles from "./forgotpassword.module.css";
 import { useGloabalStateContext } from "../../context/provider";
 import { goTo } from "react-chrome-extension-router";
@@ -5,6 +6,8 @@ import Btn from "../../components/button";
 
 import { useState } from "react";
 import Reset from "./reset";
+import Header from "../../components/header";
+import SubHeader from "../../components/subheader";
 
 const ForgotPassword = () => {
   const [mnemonic, setMnemonic] = useState([
@@ -22,21 +25,25 @@ const ForgotPassword = () => {
     "",
   ]);
   const { _setMnemonic } = useGloabalStateContext();
+  const [error, setError] = useState("");
 
   const onNext = () => {
     if (isMnemonicValid()) {
       _setMnemonic(mnemonic.join(" "));
       goTo(Reset);
-    } else {
-      setMnemonic(["", "", "", "", "", "", "", "", "", "", "", ""]);
     }
   };
 
   const isMnemonicValid = () => {
     for (let i = 0; i < 12; i++) {
-      if (mnemonic[i] === "") return false;
+      if (mnemonic[i] === "") {
+        setError("Fill in all 12 words.");   
+        return false;
+      };
     }
-    return true;
+    const isValid = bip39.validateMnemonic(mnemonic.join(" "));
+    if(!isValid) setError("Invalid Mnemonic.");
+    return isValid;
   };
 
   const changeNemonic = (e, index) => {
@@ -46,21 +53,34 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.title}>Reset Wallet</div>
-      <div className={styles.secretForm}>
-        {mnemonic.map((word, index) => (
-          <div className={styles.inputWrapper} key={index}>
-            <div className={styles.inputNumber}>
-              {index < 9 && <div className={styles.whiteSpace}>0</div>}
-              {index + 1}
+    <div className={styles.container}>
+      <Header />
+      <SubHeader title="RESTORATION" />
+      <div className={styles.wrapper}>
+        <div className={styles.title}>Enter your secret recovery phrase</div>
+        <div className={styles.secretForm}>
+          {mnemonic.map((word, index) => (
+            <div className={styles.input_wrapper} key={index}>
+              <div className={styles.input_number}>
+                {index < 9 && <div className={styles.white_space}>0</div>}
+                {index + 1}
+              </div>
+              <input
+                placeholder="wallet"
+                value={word}
+                onChange={(e) => changeNemonic(e, index)}
+                style={error && word === "" ? { borderColor: "darkred" } : {}}
+              />
             </div>
-            <input value={word} onChange={(e) => changeNemonic(e, index)} />
-          </div>
-        ))}
-      </div>
-      <div className={styles.btns_wrapper}>
-        <Btn title="Next" onClick={onNext} />
+          ))}
+        </div>
+        {(error !== '')
+        ?<div className={styles.error}>{error}</div>
+        : <></>
+        }
+        <div className={styles.login_btn}>
+          <Btn title="NEXT" right="/icons/icon_arrow.svg" onClick={onNext} />
+        </div>
       </div>
     </div>
   );

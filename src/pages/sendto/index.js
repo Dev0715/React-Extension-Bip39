@@ -1,5 +1,7 @@
 import { goTo } from "react-chrome-extension-router";
 import Btn from "../../components/button";
+import Header from "../../components/header";
+import SubHeader from "../../components/subheader";
 import { chainSymbol } from "../../context/config";
 import { useGloabalStateContext } from "../../context/provider";
 import SignTx from "../signtx";
@@ -21,9 +23,11 @@ const SendTo = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.inputForm}>
-        <div className={styles.inputWhat}>Send to</div>
+    <div className={styles.container}>
+      <Header />
+      <SubHeader title="SEND" />
+      <div className={styles.wrapper}>
+        <div className={styles.input_what}>Send to</div>
         <input
           type="text"
           placeholder="Address"
@@ -32,20 +36,27 @@ const SendTo = () => {
             _setAddress(e.target.value);
           }}
         />
-      </div>
-      <div className={styles.inputForm}>
-        <div className={styles.inputWhat}>Amount</div>
-        <input
-          type="number"
-          placeholder={chainSymbol[Number(isBTC)]}
-          value={_amount}
-          onChange={onAmountChange}
-        />
-        <div className={`${styles.inputWhat} ${styles.jpyRate}`}>
+        <div className={styles.input_what}>Amount</div>
+        <div className={styles.amount_input}>
+          <input
+            type="text"
+            placeholder="Amount"
+            value={_amount}
+            onChange={onAmountChange}
+          />
+          {chainSymbol[Number(isBTC)]}
+        </div>
+        <div className={styles.jpy_rate}>
           {`( = ${(_amount * jpyRate).toFixed(2)} JPY )`}
         </div>
+        <div className={styles.confirm_btn}>
+          <Btn
+            title="Confirm"
+            right="/icons/icon_arrow.svg"
+            onClick={sendAsset}
+          />
+        </div>
       </div>
-      <Btn title="Confirm" onClick={sendAsset} />
     </div>
   );
 };

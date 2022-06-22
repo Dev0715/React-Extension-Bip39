@@ -1,90 +1,93 @@
-import { useMemo } from "react";
-import { goBack } from "react-chrome-extension-router";
-import ReactSwitch from "react-switch";
+import { useState } from "react";
 import { useGloabalStateContext } from "../../context/provider";
-import { BtcIcon, EthIcon } from "../../context/svgs";
 import styles from "./index.module.css";
 
 const Header = () => {
-  const { isBTC, setBTC, isSwitchAble, btcKeys, ethKeys } =
-    useGloabalStateContext();
+  const { isBTC, setBTC, btcKeys } = useGloabalStateContext();
+  const [isSelectable, setSelectable] = useState(false);
+  
+  const chains = [
+    { symbol: "/icons/icon_ethereum.svg", name: "ETH" },
+    { symbol: "/icons/icon_bitcoin.svg", name: "BTC" },
+  ];
 
-  const shortAddress = useMemo(() => {
-    const _address = isBTC ? btcKeys.address : ethKeys.address;
-    const len = _address.length;
-    if (len === 0) return "No Address";
-    else
-      return (
-        _address.substr(0, isBTC ? 3 : 5) + "..." + _address.substr(len - 4, 4)
-      );
-  }, [isBTC, btcKeys, ethKeys]);
-
-  const SwithContent = ({ title }) => {
-    return (
-      <div className={styles.switch_content_wrapper}>
-        <div className={styles.switch_content}>{title}</div>
-      </div>
-    );
+  const onMouseEnter_Chain = (e) => {
+    setSelectable(true);
   };
 
-  const SwitchIcon = ({ isBTC }) => {
-    return (
-      <div className={styles.switch_icon_wrapper}>
-        <div className={styles.switch_icon}>
-          {isBTC ? <BtcIcon /> : <EthIcon />}
-        </div>
-      </div>
-    );
+  const onMouseLeave_Chain = (e) => {
+    setSelectable(false);
   };
 
-  const onClickAddress = () => {
-    const _address = isBTC ? btcKeys.address : ethKeys.address;
-    copyToClipboard(_address)
-      .then(() => {
-        console.log("Copied");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const onMouseEnter_ChainSelect = (e) => {
+    setSelectable(true);
   };
 
-  const copyToClipboard = (str) => {
-    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
-      return navigator.clipboard.writeText(str);
-    return Promise.reject("The Clipboard API is not available.");
+  const onMouseLeave_ChainSelect = (e) => {
+    setSelectable(false);
   };
 
-  const onBack = () => {
-    goBack();
+  const onClick_ChainSelect = (e) => {
+    setBTC(!isBTC);
+    setSelectable(false);
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.container}>
-        <ReactSwitch
-          id="network-radius-switch"
-          checked={isBTC}
-          onChange={setBTC}
-          handleDiameter={24}
-          onColor="#6A4DFD"
-          offColor="#6A4DFD"
-          onHandleColor="#FFF"
-          offHandleColor="#FFF"
-          width={80}
-          height={32}
-          borderRadius={6}
-          activeBoxShadow="0px 0px 1px 1px #FFF"
-          checkedIcon={<SwithContent title="BTC" />}
-          uncheckedIcon={<SwithContent title="ETH" />}
-          checkedHandleIcon={<SwitchIcon isBTC={true} />}
-          uncheckedHandleIcon={<SwitchIcon isBTC={false} />}
-          disabled={!isSwitchAble}
-        />
-        <div className={styles.title} onClick={onClickAddress}>
-          {shortAddress}
-        </div>
-        <div className={styles.back_wrapper} onClick={onBack}>
-          <img className={styles.back} src="./icon-back.png" alt="back" />
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
+        <img className={styles.logo} src="/images/logo.white_side.svg" alt="" />
+        <div className={styles.menus}>
+          {/* Chain Option */}
+          {btcKeys.address !== "" && (
+            <div
+              className={styles.menu}
+              onMouseEnter={onMouseEnter_Chain}
+              onMouseLeave={onMouseLeave_Chain}
+            >
+              <img
+                className={styles.menu_logo}
+                src={chains[Number(isBTC)].symbol}
+                alt=""
+              />
+              <div className={styles.menu_name}>
+                {chains[Number(isBTC)].name}
+              </div>
+              <img
+                className={styles.menu_logo}
+                src="/icons/icon_expand.png"
+                alt=""
+              />
+            </div>
+          )}
+          {/* Language Option */}
+          {/* <div className={styles.menu}>
+            <img
+              className={styles.menu_logo}
+              src="/icons/icon_language.svg"
+              alt=""
+            />
+            <div className={styles.menu_name}>English</div>
+          </div> */}
+          {
+            /* Chain Select */
+            isSelectable && (
+              <div
+                className={`${styles.menu_chain} ${styles.menu}`}
+                onMouseEnter={onMouseEnter_ChainSelect}
+                onMouseLeave={onMouseLeave_ChainSelect}
+                onClick={onClick_ChainSelect}
+              >
+                <img
+                  className={styles.menu_logo}
+                  src={chains[Number(!isBTC)].symbol}
+                  alt=""
+                />
+                <div className={styles.menu_name}>
+                  {chains[Number(!isBTC)].name}
+                </div>
+              </div>
+            )
+          }
         </div>
       </div>
     </div>
