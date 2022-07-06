@@ -35,12 +35,15 @@ import SubHeader from "../../components/subheader";
 import Btn from "../../components/button";
 
 const Activity = () => {
-  const { isBTC, btcKeys, ethKeys, _setTxDataToSend, _setActivityToConf, _txHash, _setTxHash, _setStep, _userName } =
+  const { isBTC, btcKeys, ethKeys, _setTxDataToSend, _setActivityToConf, _txHash, _setTxHash, _setStep, _userName, _setUserName } =
     useGloabalStateContext();
   const [activity, setActivity] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (localStorage.getItem("name")) {
+      _setUserName(localStorage.getItem("name"));
+    };
     getHistory();
     const timerId = setInterval(getHistory, GetDbStateInterval);
     return () => {
@@ -379,7 +382,9 @@ const Activity = () => {
                           title={
                             item.type.toUpperCase() === "APPROVED"
                               ? "SEND TX"
-                              : item.type.toUpperCase() === ("PENDING" ||"REJECTED")
+                              : item.type.toUpperCase() === "PENDING"
+                              ? "RESEND"
+                              : item.type.toUpperCase() === "REJECTED"
                               ? "RESEND"
                               : item.type.toUpperCase() === "SEND"
                               ? "TX DATA"
@@ -388,7 +393,9 @@ const Activity = () => {
                           color={
                             item.type.toUpperCase() === "APPROVED"
                               ? "#FC3547"
-                              : item.type.toUpperCase() === ("PENDING" ||"REJECTED")
+                              : item.type.toUpperCase() === "REJECTED"
+                              ? "#FC3547"
+                              : item.type.toUpperCase() === ("PENDING")
                               ? "#0096F4"
                               : "#A3A3A3"
                           }

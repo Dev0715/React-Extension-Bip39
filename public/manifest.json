@@ -5,11 +5,18 @@
   "manifest_version": 3,
   "permissions": ["storage"],
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "logo_icon.png"
+    },
+    "default_title":"TrulyWallet"
   },
   "icons": {
     "16": "logo_icon.png",
     "48": "logo_icon.png",
     "128": "logo_icon.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   }
 }

@@ -1,7 +1,7 @@
 import { chainSymbol } from "../../context/config";
 import styles from "./index.module.css";
 
-const SendHeader = ({ toAddress, amount, step, error }) => {
+const SendHeader = ({ toAddress, amount, step, error, errorStr }) => {
   const isBtcAddr = toAddress.substr(0, 2) === "0x" ? false : true;
   const steps = [
     {
@@ -84,14 +84,14 @@ const SendHeader = ({ toAddress, amount, step, error }) => {
         <div
           className={styles.text}
           style={{
-            color: step === 4 || steps[step].approved ? "#81D056" : "#E3348C",
+            color: error
+              ? "#E3348C"
+              : step === 4 || steps[step].approved
+              ? "#81D056"
+              : "#E3348C",
           }}
         >
-          {error
-            ? "Failed sending tx"
-            : step < 4
-            ? steps[step].text
-            : "Confirmed"}
+          {error ? errorStr : step < 4 ? steps[step].text : "Confirmed"}
         </div>
         {step === 1 && (
           <div

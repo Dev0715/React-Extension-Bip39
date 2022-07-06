@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "truly-wallet-5cd8f"
-  }
+    "default": "truly-wallet-001"
+  },
+  "targets": {}
 }

@@ -26,7 +26,7 @@ let canceled = false;
 let docRefId;
 
 const SignComplete = () => {
-  const { _txDataToSend, _address, _amount, _userName, isBTC, btcKeys, ethKeys } =
+  const { _txDataToSend, _address, _amount, _userName, _setUserName, isBTC, btcKeys, ethKeys } =
     useGloabalStateContext();
 
   useEffect(() => {
@@ -40,6 +40,9 @@ const SignComplete = () => {
   }, []);
 
   const signTx = async () => {
+    if (localStorage.getItem("name") && _userName === "") {
+      _setUserName(localStorage.getItem("name"));
+    };
     try {
       const from_address = isBTC ? btcKeys.address : ethKeys.address.toLowerCase();
       const docRef = await addDoc(collection(db, "transaction"), {
